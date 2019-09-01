@@ -7,8 +7,8 @@ const FreeAPIURI = "http://ip-api.com/json/"
 const ProAPIURI = "http://pro.ip-api.com/json/"
 
 type Location struct {
-	Query			string	`json:"query,omitempty"`
 	Status 			string	`json:"status,omitempty"`
+	Message			string	`json:"message,omitempty"`
 	Continent		string	`json:"continent,omitempty"`
 	ContinentCode	string	`json:"continentCode,omitempty"`
 	Country			string	`json:"country,omitempty"`
@@ -26,6 +26,8 @@ type Location struct {
 	Org				string	`json:"org,omitempty"`
 	AS				string	`json:"as,omitempty"`
 	ASName			string	`json:"asame,omitempty"`
+	Reverse			string	`json:"reverse,omitempty"`
 	Mobile			bool	`json:"mobile,omitempty"`
 	Proxy			bool	`json:"proxy,omitempty"`
+	Query			string	`json:"query,omitempty"`
 }
