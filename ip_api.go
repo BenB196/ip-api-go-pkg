@@ -165,7 +165,7 @@ func buildURI(query Query, queryType string, apiKey string) string {
 	case "":
 		baseURI = FreeAPIURI
 	default:
-		baseURI = FreeAPIURI
+		baseURI = ProAPIURI
 	}
 
 	//Update base URI with query type
