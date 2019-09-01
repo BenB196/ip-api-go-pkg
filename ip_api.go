@@ -49,7 +49,7 @@ type Query struct {
 }
 
 type QueryIP struct {
-	Query string `json:"query"`
+	Query 	string 		`json:"query"`
 }
 
 //Execute a single query (queries field should only contain 1 value
