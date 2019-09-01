@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -42,9 +43,13 @@ type Location struct {
 }
 
 type Query struct {
-	Queries	[]string 	`json:"queries"`
+	Queries	[]QueryIP 	`json:"queries"`
 	Fields 	[]string	`json:"fields,omitempty"`
 	Lang	string		`json:"lang,omitempty"`
+}
+
+type QueryIP struct {
+	Query string `json:"query"`
 }
 
 //Execute a single query (queries field should only contain 1 value
@@ -116,6 +121,8 @@ func BatchQuery(query Query, apiKey string) ([]Location, error) {
 		return nil, err
 	}
 
+	log.Println(string(queries))
+
 	//Execute Query
 	req, err := http.NewRequest("POST",uri,bytes.NewReader(queries))
 
@@ -171,7 +178,7 @@ func buildURI(query Query, queryType string, apiKey string) string {
 	//Update base URI with query type
 	switch queryType {
 	case "single":
-		baseURI = baseURI + "json/" + query.Queries[0]
+		baseURI = baseURI + "json/" + query.Queries[0].Query
 	case "batch":
 		baseURI = baseURI + "batch"
 	}
