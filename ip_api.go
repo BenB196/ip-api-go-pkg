@@ -1,10 +1,10 @@
 package ip_api
 
 //URI for the free IP-API
-const FreeAPIURI = "http://ip-api.com/json/"
+const FreeAPIURI = "http://ip-api.com/"
 
 //URI for the pro IP-API
-const ProAPIURI = "http://pro.ip-api.com/json/"
+const ProAPIURI = "http://pro.ip-api.com/"
 
 type Location struct {
 	Status 			string	`json:"status,omitempty"`
@@ -31,3 +31,13 @@ type Location struct {
 	Proxy			bool	`json:"proxy,omitempty"`
 	Query			string	`json:"query,omitempty"`
 }
+
+type Query struct {
+	Queries	[]string 	`json:"queries"`
+	Fields 	[]string	`json:"fields,omitempty"`
+	Lang	string		`json:"lang,omitempty"`
+}
+
+//TODO func for single query /json/
+
+//TODO func for batch query /batch
