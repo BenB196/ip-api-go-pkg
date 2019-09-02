@@ -53,14 +53,14 @@ type QueryIP struct {
 }
 
 //Execute a single query (queries field should only contain 1 value
-func SingleQuery(query Query, apiKey string) (Location, error) {
+func SingleQuery(query Query, apiKey string, baseURL string) (Location, error) {
 	//Make sure that there is only 1 query value
 	if len(query.Queries) != 1 {
 		return Location{}, errors.New("error: only 1 query can be passed to single query api")
 	}
 
 	//Build URI
-	uri := buildURI(query, "single",apiKey)
+	uri := buildURI(query, "single",apiKey, baseURL)
 
 	//Execute query
 	req, err := http.NewRequest("GET",uri,nil)
@@ -105,14 +105,14 @@ func SingleQuery(query Query, apiKey string) (Location, error) {
 }
 
 //Execute a batch query (queries field should contain 1 or more values
-func BatchQuery(query Query, apiKey string) ([]Location, error) {
+func BatchQuery(query Query, apiKey string, baseURL string) ([]Location, error) {
 	//Make sure that there are 1 or more query values
 	if len(query.Queries) < 1 {
 		return nil, errors.New("error: no queries passed to batch query")
 	}
 
 	//Build URI
-	uri := buildURI(query,"batch",apiKey)
+	uri := buildURI(query,"batch",apiKey, baseURL)
 
 	//Build queries list
 	queries, err := json.Marshal(query.Queries)
@@ -165,14 +165,18 @@ func BatchQuery(query Query, apiKey string) ([]Location, error) {
 	return locations,nil
 }
 
-func buildURI(query Query, queryType string, apiKey string) string {
+func buildURI(query Query, queryType string, apiKey string, baseURL string) string {
 	var baseURI string
 	//Set base URI
-	switch apiKey {
-	case "":
-		baseURI = FreeAPIURI
-	default:
-		baseURI = ProAPIURI
+	if baseURL != "" {
+		baseURI = baseURL
+	} else {
+		switch apiKey {
+		case "":
+			baseURI = FreeAPIURI
+		default:
+			baseURI = ProAPIURI
+		}
 	}
 
 	//Update base URI with query type

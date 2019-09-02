@@ -113,7 +113,7 @@ func TestSingleQuery(t *testing.T) {
 
 	var location Location
 
-	location, err := SingleQuery(singleQuery,"")
+	location, err := SingleQuery(singleQuery,"","")
 
 	if err != nil {
 		t.Error(err)
@@ -141,7 +141,7 @@ func TestBatchQuery(t *testing.T) {
 
 	var locations []Location
 
-	locations, err := BatchQuery(batchQuery,"")
+	locations, err := BatchQuery(batchQuery,"","")
 
 	if err != nil {
 		t.Error(err)
