@@ -44,7 +44,7 @@ type Location struct {
 
 type Query struct {
 	Queries	[]QueryIP 	`json:"queries"`
-	Fields 	[]string	`json:"fields,omitempty"`
+	Fields 	string		`json:"fields,omitempty"`
 	Lang	string		`json:"lang,omitempty"`
 }
 
@@ -225,8 +225,8 @@ func buildURI(query Query, queryType string, apiKey string, baseURL string) stri
 }
 
 //Build fields string from slice
-func buildFieldList(fields []string) string {
-	return "fields=" + strings.Join(fields,",")
+func buildFieldList(fields string) string {
+	return "fields=" + fields
 }
 
 //Build lang string from lang value

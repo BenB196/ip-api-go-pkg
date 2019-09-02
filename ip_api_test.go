@@ -133,7 +133,7 @@ func TestSingleQuery(t *testing.T) {
 		Queries: []QueryIP{
 			{Query:"8.8.8.8"},
 		},
-		Fields:  []string{"status","message","continent","continentCode","country","countryCode","region","regionName","city","district","zip","lat","lon","timezone","isp","org","as","asname","reverse","mobile","proxy","query"},
+		Fields:  "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query",
 		Lang:    "",
 	}
 
@@ -162,7 +162,7 @@ func TestBatchQuery(t *testing.T) {
 			{Query:"1.1.1.1"},
 			{Query:"8.8.4.4",Fields:"status,message,continent,country,region,city,zip,lat",Lang:"ru"},
 		},
-		Fields:  []string{"status","message","continent","continentCode","country","countryCode","region","regionName","city","district","zip","lat","lon","timezone","isp","org","as","asname","reverse","mobile","proxy","query"},
+		Fields:  "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query",
 		Lang:    "",
 	}
 
@@ -184,7 +184,7 @@ func TestBatchQuery(t *testing.T) {
 }
 
 func TestBuildFieldList(t *testing.T) {
-	fieldsList := []string{"status","message","continent","continentCode","country","countryCode","region","regionName","city","district","zip","lat","lon","timezone","isp","org","as","asname","reverse","mobile","proxy","query"}
+	fieldsList := "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query"
 
 	fieldListString := buildFieldList(fieldsList)
 
