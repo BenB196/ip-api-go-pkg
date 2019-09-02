@@ -90,8 +90,34 @@ func getSuccessfulBatchResponse() string {
 		Proxy:         false,
 		Query:         "1.1.1.1",
 	}
+	
+	location3 := Location{
+		Status:        "success",
+		Message:       "",
+		Continent:     "Северная Америка",
+		ContinentCode: "",
+		Country:       "США",
+		CountryCode:   "",
+		Region:        "VA",
+		RegionName:    "",
+		City:          "Ашберн",
+		District:      "",
+		ZIP:           "20149",
+		Lat:           39.0438,
+		Lon:           0,
+		Timezone:      "",
+		Currency:      "",
+		ISP:           "",
+		Org:           "",
+		AS:            "",
+		ASName:        "",
+		Reverse:       "",
+		Mobile:        false,
+		Proxy:         false,
+		Query:         "",
+	}
 
-	locations := []Location{location1,location2}
+	locations := []Location{location1,location2,location3}
 
 	result, _ := json.Marshal(locations)
 
@@ -134,6 +160,7 @@ func TestBatchQuery(t *testing.T) {
 		Queries: []QueryIP{
 			{Query:"8.8.8.8"},
 			{Query:"1.1.1.1"},
+			{Query:"8.8.4.4",Fields:"status,message,continent,country,region,city,zip,lat",Lang:"ru"},
 		},
 		Fields:  []string{"status","message","continent","continentCode","country","countryCode","region","regionName","city","district","zip","lat","lon","timezone","isp","org","as","asname","reverse","mobile","proxy","query"},
 		Lang:    "",

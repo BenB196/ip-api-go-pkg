@@ -50,6 +50,8 @@ type Query struct {
 
 type QueryIP struct {
 	Query 	string 		`json:"query"`
+	Fields	string		`json:"fields,omitempty"`
+	Lang	string		`json:"lang,omitempty"`
 }
 
 //Execute a single query (queries field should only contain 1 value
