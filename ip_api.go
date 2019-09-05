@@ -14,7 +14,7 @@ import (
 const FreeAPIURI = "http://ip-api.com/"
 
 //URI for the pro IP-API
-const ProAPIURI = "http://pro.ip-api.com/"
+const ProAPIURI = "https://pro.ip-api.com/"
 
 type Location struct {
 	Status 			string	`json:"status,omitempty"`
