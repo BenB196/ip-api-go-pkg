@@ -67,10 +67,12 @@ type Location struct {
 
 ## Functions
 
-There are two main functions within this package:
+There are four (4) main functions within this package:
 
 1. SingleQuery
 2. BatchQuery
+3. ValidateFields
+4. ValidateLang
 
 These functions allow someone to query IP-API's API within Golang and return the values as Golang structs to be used within other Golang applications.
 
@@ -101,6 +103,28 @@ Returns:
 - error - Any errors.
 
 An observation about the batch query. It sometime appears to return less data then the single query on the exact same query even when the same fields are passed. This is something that appears to be on the IP-API end, not the package end.
+
+### ValidateFields function
+
+The ValidateFields function is designed to validate that the fields which are being passed to the IP-API are valid.
+
+Arguments:
+- fields - This is a string which contains comma separated values of the fields. It will be checked against the AllowedAPIFields.
+
+Returns:
+- string - The same string which was passed to it in the fields argument.
+- error - Any errors.
+
+### ValidateLang function
+
+The validateLang function is designed to validate the lang string which is one of the languages supported by IP-API.
+
+Arguments:
+- lang - the string which contains the desired language.
+
+Returns:
+- string - The same string which was passed to it in the lang argument.
+- error - Any errors.
 
 #Important
 

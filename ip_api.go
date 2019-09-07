@@ -233,3 +233,52 @@ func buildFieldList(fields string) string {
 func buildLangString(lang string) string {
 	return "lang=" + lang
 }
+
+var AllowedAPIFields = []string{"status","message","continent","continentCode","country","countryCode","region","regionName","city","district","zip","lat","lon","timezone","isp","org","as","asname","reverse","mobile","proxy","query"}
+
+var AllowedLangs = []string{"en","de","es","pt-BR","fr","ja","zh-CN","ru"}
+
+/*
+ValidateFields - validates the fields string to make sure it only has valid parameters
+fields - string of comma separated values
+*/
+func ValidateFields(fields string) (string, error) {
+	fieldsSlice := strings.Split(fields,",")
+
+	for _, field := range fieldsSlice {
+		if !contains(AllowedAPIFields, field) {
+			return "", errors.New("error: illegal field provided: " + field)
+		}
+	}
+
+	return fields, nil
+}
+
+/*
+ValidateLang - validates the lang string to make sure it is a valid lang option
+lang - string with lang value
+*/
+func ValidateLang(lang string) (string, error) {
+	if !contains(AllowedLangs,lang) {
+		return "", errors.New("error: illegal lang value provided: " + lang)
+	}
+
+	return lang, nil
+}
+
+/*
+contains - checks a string slice to see if it contains a string
+slice - string slice which you want to check
+item - string which you want to see if exists in the string slice
+
+returns
+bool - true if slice contains string, else false
+*/
+func contains(slice []string, item string) bool {
+	for _, value := range slice {
+		if value == item {
+			return true
+		}
+	}
+	return false
+}
