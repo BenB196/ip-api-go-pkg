@@ -102,7 +102,7 @@ Returns:
 - []Location - Golang slice of location structs that contains the results of the query.
 - error - Any errors.
 
-An observation about the batch query. It sometime appears to return less data then the single query on the exact same query even when the same fields are passed. This is something that appears to be on the IP-API end, not the package end.
+Important Note: Batch requests to IP-API do not return reverse information even if the field is passed. This information will need to be handled on the implementation end of this package. If you wish to retrieve this information in Golang, you can use the function [net.LookupAddr()](https://golang.org/pkg/net/#LookupAddr).
 
 ### ValidateFields function
 
