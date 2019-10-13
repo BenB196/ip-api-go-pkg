@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 //URI for the free IP-API
@@ -16,7 +17,7 @@ const FreeAPIURI = "http://ip-api.com/"
 //URI for the pro IP-API
 const ProAPIURI = "https://pro.ip-api.com/"
 
-type LocationCamal struct {
+type LocationCamel struct {
 	Status 			string		`json:"status,omitempty"`
 	Message			string		`json:"message,omitempty"`
 	Continent		string		`json:"continent,omitempty"`
@@ -88,11 +89,11 @@ type QueryIP struct {
 }
 
 //Execute a single query (queries field should only contain 1 value
-func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseType string) (LocationCamal, LocationSnake, error) {
+func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseType string) (LocationCamel, LocationSnake, error) {
 
 	//Make sure that there is only 1 query value
 	if len(query.Queries) != 1 {
-		return LocationCamal{}, LocationSnake{}, errors.New("error: only 1 query can be passed to single query api")
+		return LocationCamel{}, LocationSnake{}, errors.New("error: only 1 query can be passed to single query api")
 	}
 
 	//Build URI
@@ -102,7 +103,7 @@ func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, case
 	req, err := http.NewRequest("GET",uri,nil)
 
 	if err != nil {
-		return LocationCamal{}, LocationSnake{}, err
+		return LocationCamel{}, LocationSnake{}, err
 	}
 
 	//Set request headers
@@ -111,7 +112,7 @@ func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, case
 	resp, err := http.DefaultClient.Do(req)
 
 	if err != nil {
-		return LocationCamal{}, LocationSnake{}, err
+		return LocationCamel{}, LocationSnake{}, err
 	}
 
 	defer resp.Body.Close()
@@ -119,24 +120,24 @@ func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, case
 	//Check if invalid api key
 	if resp.StatusCode == 403 {
 		if strings.Contains(uri, "?key=") {
-			return LocationCamal{}, LocationSnake{}, errors.New("error: invalid api key")
+			return LocationCamel{}, LocationSnake{}, errors.New("error: invalid api key")
 		} else {
-			return LocationCamal{}, LocationSnake{}, errors.New("error: exceeded api calls per minute, you need to un-blacklist yourself")
+			return LocationCamel{}, LocationSnake{}, errors.New("error: exceeded api calls per minute, you need to un-blacklist yourself")
 		}
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return LocationCamal{}, LocationSnake{}, errors.New("error querying ip api: " + resp.Status + " " + strconv.Itoa(resp.StatusCode))
+		return LocationCamel{}, LocationSnake{}, errors.New("error querying ip api: " + resp.Status + " " + strconv.Itoa(resp.StatusCode))
 	}
 
 	switch caseType {
-	case "camal":
-		var location LocationCamal
+	case "camel":
+		var location LocationCamel
 
 		err = json.NewDecoder(resp.Body).Decode(&location)
 
 		if err != nil {
-			return LocationCamal{}, LocationSnake{}, err
+			return LocationCamel{}, LocationSnake{}, err
 		}
 
 		if geoPoint && location.Lon != 0 && location.Lat != 0 {
@@ -154,7 +155,7 @@ func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, case
 		err = json.NewDecoder(resp.Body).Decode(&location)
 
 		if err != nil {
-			return LocationCamal{}, LocationSnake{}, err
+			return LocationCamel{}, LocationSnake{}, err
 		}
 
 		if geoPoint && location.Lon != 0 && location.Lat != 0 {
@@ -165,14 +166,14 @@ func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool, case
 			location.GeoPoint = &point
 		}
 
-		return LocationCamal{}, location,nil
+		return LocationCamel{}, location,nil
 	default:
-		return LocationCamal{}, LocationSnake{}, errors.New("error: unknown case type either camal or snake supported")
+		return LocationCamel{}, LocationSnake{}, errors.New("error: unknown case type either camel or snake supported")
 	}
 }
 
 //Execute a batch query (queries field should contain 1 or more values
-func BatchQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseType string) ([]LocationCamal, []LocationSnake, error) {
+func BatchQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseType string) ([]LocationCamel, []LocationSnake, error) {
 	//Make sure that there are 1 or more query values
 	if len(query.Queries) < 1 {
 		return nil, nil, errors.New("error: no queries passed to batch query")
@@ -222,8 +223,8 @@ func BatchQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseT
 	}
 
 	switch caseType {
-	case "camal":
-		var locations []LocationCamal
+	case "camel":
+		var locations []LocationCamel
 
 		err = json.NewDecoder(resp.Body).Decode(&locations)
 
@@ -232,15 +233,21 @@ func BatchQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseT
 		}
 
 		if geoPoint {
-			for i, location := range locations {
-				if location.Lat != 0 && location.Lon != 0 {
-					point := GeoPoint{
-						Lat: location.Lat,
-						Lon: location.Lon,
+			var geoPointWG sync.WaitGroup
+			geoPointWG.Add(len(locations))
+			go func() {
+				for i, location := range locations {
+					if location.Lat != 0 && location.Lon != 0 {
+						point := GeoPoint{
+							Lat: location.Lat,
+							Lon: location.Lon,
+						}
+						locations[i].GeoPoint = &point
 					}
-					locations[i].GeoPoint = &point
+					geoPointWG.Done()
 				}
-			}
+			}()
+			geoPointWG.Wait()
 		}
 
 		return locations,nil,nil
@@ -254,20 +261,26 @@ func BatchQuery(query Query, apiKey string, baseURL string, geoPoint bool, caseT
 		}
 
 		if geoPoint {
-			for i, location := range locations {
-				if location.Lat != 0 && location.Lon != 0 {
-					point := GeoPoint{
-						Lat: location.Lat,
-						Lon: location.Lon,
+			var geoPointWG sync.WaitGroup
+			geoPointWG.Add(len(locations))
+			go func() {
+				for i, location := range locations {
+					if location.Lat != 0 && location.Lon != 0 {
+						point := GeoPoint{
+							Lat: location.Lat,
+							Lon: location.Lon,
+						}
+						locations[i].GeoPoint = &point
 					}
-					locations[i].GeoPoint = &point
+					geoPointWG.Done()
 				}
-			}
+			}()
+			geoPointWG.Wait()
 		}
 
 		return nil,locations,nil
 	default:
-		return nil, nil, errors.New("error: unknown case type either camal or snake supported")
+		return nil, nil, errors.New("error: unknown case type either camel or snake supported")
 	}
 }
 
