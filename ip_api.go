@@ -17,29 +17,35 @@ const FreeAPIURI = "http://ip-api.com/"
 const ProAPIURI = "https://pro.ip-api.com/"
 
 type Location struct {
-	Status 			string	`json:"status,omitempty"`
-	Message			string	`json:"message,omitempty"`
-	Continent		string	`json:"continent,omitempty"`
-	ContinentCode	string	`json:"continentCode,omitempty"`
-	Country			string	`json:"country,omitempty"`
-	CountryCode		string	`json:"countryCode,omitempty"`
-	Region			string	`json:"region,omitempty"`
-	RegionName		string	`json:"regionName,omitempty"`
-	City			string	`json:"city,omitempty"`
-	District		string	`json:"district,omitempty"`
-	ZIP				string	`json:"zip,omitempty"`
-	Lat				float32	`json:"lat,omitempty"`
-	Lon				float32	`json:"lon,omitempty"`
-	Timezone		string	`json:"timezone,omitempty"`
-	Currency		string	`json:"currency,omitempty"`
-	ISP				string	`json:"isp,omitempty"`
-	Org				string	`json:"org,omitempty"`
-	AS				string	`json:"as,omitempty"`
-	ASName			string	`json:"asame,omitempty"`
-	Reverse			string	`json:"reverse,omitempty"`
-	Mobile			bool	`json:"mobile,omitempty"`
-	Proxy			bool	`json:"proxy,omitempty"`
-	Query			string	`json:"query,omitempty"`
+	Status 			string		`json:"status,omitempty"`
+	Message			string		`json:"message,omitempty"`
+	Continent		string		`json:"continent,omitempty"`
+	ContinentCode	string		`json:"continentCode,omitempty"`
+	Country			string		`json:"country,omitempty"`
+	CountryCode		string		`json:"countryCode,omitempty"`
+	Region			string		`json:"region,omitempty"`
+	RegionName		string		`json:"regionName,omitempty"`
+	City			string		`json:"city,omitempty"`
+	District		string		`json:"district,omitempty"`
+	ZIP				string		`json:"zip,omitempty"`
+	Lat				float32		`json:"lat,omitempty"`
+	Lon				float32		`json:"lon,omitempty"`
+	Timezone		string		`json:"timezone,omitempty"`
+	Currency		string		`json:"currency,omitempty"`
+	ISP				string		`json:"isp,omitempty"`
+	Org				string		`json:"org,omitempty"`
+	AS				string		`json:"as,omitempty"`
+	ASName			string		`json:"asame,omitempty"`
+	Reverse			string		`json:"reverse,omitempty"`
+	Mobile			bool		`json:"mobile,omitempty"`
+	Proxy			bool		`json:"proxy,omitempty"`
+	Query			string		`json:"query,omitempty"`
+	GeoPoint		GeoPoint	`json:"geoPoint,omitempty"`
+}
+
+type GeoPoint struct {
+	Lat	float32	`json:"lat"`
+	Lon	float32	`json:"lon"`
 }
 
 type Query struct {
@@ -55,7 +61,7 @@ type QueryIP struct {
 }
 
 //Execute a single query (queries field should only contain 1 value
-func SingleQuery(query Query, apiKey string, baseURL string) (Location, error) {
+func SingleQuery(query Query, apiKey string, baseURL string, geoPoint bool) (Location, error) {
 	//Make sure that there is only 1 query value
 	if len(query.Queries) != 1 {
 		return Location{}, errors.New("error: only 1 query can be passed to single query api")
@@ -103,11 +109,18 @@ func SingleQuery(query Query, apiKey string, baseURL string) (Location, error) {
 		return Location{}, err
 	}
 
+	if geoPoint && location.Lon != 0 && location.Lat != 0 {
+		location.GeoPoint = GeoPoint{
+			Lat: location.Lat,
+			Lon: location.Lon,
+		}
+	}
+
 	return location,nil
 }
 
 //Execute a batch query (queries field should contain 1 or more values
-func BatchQuery(query Query, apiKey string, baseURL string) ([]Location, error) {
+func BatchQuery(query Query, apiKey string, baseURL string, geoPoint bool) ([]Location, error) {
 	//Make sure that there are 1 or more query values
 	if len(query.Queries) < 1 {
 		return nil, errors.New("error: no queries passed to batch query")
@@ -162,6 +175,17 @@ func BatchQuery(query Query, apiKey string, baseURL string) ([]Location, error) 
 
 	if err != nil {
 		return nil, err
+	}
+
+	if geoPoint {
+		for i, location := range locations {
+			if location.Lat != 0 && location.Lon != 0 {
+				locations[i].GeoPoint = GeoPoint{
+					Lat: location.Lat,
+					Lon: location.Lon,
+				}
+			}
+		}
 	}
 
 	return locations,nil
