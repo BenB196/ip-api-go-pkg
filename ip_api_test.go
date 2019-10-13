@@ -7,7 +7,7 @@ import (
 )
 
 func getSuccessfulSingleResponse() string {
-	location := Location{
+	location := LocationCamal{
 		Status:        "success",
 		Message:       "",
 		Continent:     "North America",
@@ -23,8 +23,8 @@ func getSuccessfulSingleResponse() string {
 		Lon:           -77.4874,
 		Timezone:      "America/New_York",
 		Currency:      "",
-		ISP:           "Level 3 Communications",
-		Org:           "Google Inc.",
+		ISP:           "Level 3",
+		Org:           "Google LLC",
 		AS:            "AS15169 Google LLC",
 		ASName:        "",
 		Reverse:       "dns.google",
@@ -39,7 +39,7 @@ func getSuccessfulSingleResponse() string {
 }
 
 func getSuccessfulBatchResponse() string {
-	location1 := Location{
+	location1 := LocationCamal{
 		Status:        "success",
 		Message:       "",
 		Continent:     "North America",
@@ -55,8 +55,8 @@ func getSuccessfulBatchResponse() string {
 		Lon:           -77.4874,
 		Timezone:      "America/New_York",
 		Currency:      "",
-		ISP:           "Level 3 Communications",
-		Org:           "Google Inc.",
+		ISP:           "Level 3",
+		Org:           "Google LLC",
 		AS:            "AS15169 Google LLC",
 		ASName:        "",
 		Reverse:       "",
@@ -65,7 +65,7 @@ func getSuccessfulBatchResponse() string {
 		Query:         "8.8.8.8",
 	}
 	
-	location2 := Location{
+	location2 := LocationCamal{
 		Status:        "success",
 		Message:       "",
 		Continent:     "Oceania",
@@ -91,7 +91,7 @@ func getSuccessfulBatchResponse() string {
 		Query:         "1.1.1.1",
 	}
 	
-	location3 := Location{
+	location3 := LocationCamal{
 		Status:        "success",
 		Message:       "",
 		Continent:     "Северная Америка",
@@ -117,7 +117,7 @@ func getSuccessfulBatchResponse() string {
 		Query:         "",
 	}
 
-	locations := []Location{location1,location2,location3}
+	locations := []LocationCamal{location1,location2,location3}
 
 	result, _ := json.Marshal(locations)
 
@@ -137,9 +137,9 @@ func TestSingleQuery(t *testing.T) {
 		Lang:    "",
 	}
 
-	var location Location
+	var location LocationCamal
 
-	location, err := SingleQuery(singleQuery,"","", false)
+	location, _, err := SingleQuery(singleQuery,"","", false, "camal")
 
 	if err != nil {
 		t.Error(err)
@@ -166,9 +166,9 @@ func TestBatchQuery(t *testing.T) {
 		Lang:    "",
 	}
 
-	var locations []Location
+	var locations []LocationCamal
 
-	locations, err := BatchQuery(batchQuery,"","", false)
+	locations, _, err := BatchQuery(batchQuery,"","", false, "camal")
 
 	if err != nil {
 		t.Error(err)
