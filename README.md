@@ -9,7 +9,7 @@ The goal of this Golang package is to provide an easy to use package for integra
 There are two main structs within this package:
 
 1. Query
-2. LocationCamal
+2. LocationCamel
 3. LocationSnake
 
 ### Query struct
@@ -34,12 +34,12 @@ List of possible fields that can be passed: status, message, continent, continen
 
 List of possible languages that can be passed: en, de, es, pt-BR, fr, ja, zh-CN, ru [2](http://ip-api.com/docs/api:json)
 
-### LocationCamal struct
+### LocationCamel struct
 
-The locationCamal struct is designed to take the return of the IP-API query and provide it in an easy to use struct and when marshalled will fields will be in camalCase.
+The locationCamel struct is designed to take the return of the IP-API query and provide it in an easy to use struct and when marshalled will fields will be in camelCase.
 
 ```
-type LocationCamal struct {
+type LocationCamel struct {
 	Status 	        string	    `json:"status,omitempty"`
 	Message	        string	    `json:"message,omitempty"`
 	Continent       string	    `json:"continent,omitempty"`
@@ -130,10 +130,10 @@ Arguments:
 - apiKey - This is for when you are using the pro version of IP-API and which to have the [increased functionality](https://members.ip-api.com/).
 - baseURL - This is really only intended to be used if you are going through some sort of IP-API proxy. Otherwise, this can be left blank, and the URL will be determined by whether an API Key is provided or not.
 - geoPoint - This is a bool which determines if you want to have a geoPoint added to the location struct
-- caseType - This determines whether you want to use the camalCase or snake_case struct. Pass camal for CamalCase and snake for snake_case.
+- caseType - This determines whether you want to use the camelCase or snake_case struct. Pass camel for CamelCase and snake for snake_case.
 
 Returns:
-- LocationCamal - Golang struct that contains the results of the query and will marshal as camalCase.
+- LocationCamel - Golang struct that contains the results of the query and will marshal as camelCase.
 - LocationSnake - Golang struct that contains the results of the query and will marshal as snake_case.
 - error - Any errors.
 
@@ -146,10 +146,10 @@ Arguments:
 - apiKey - This is for when you are using the pro version of IP-API and which to have the [increased functionality](https://members.ip-api.com/).
 - baseURL - This is really only intended to be used if you are going through some sort of IP-API proxy. Otherwise, this can be left blank, and the URL will be determined by whether an API Key is provided or not.
 - geoPoint - This is a bool which determines if you want to have a geoPoint added to the location struct
-- caseType - This determines whether you want to use the camalCase or snake_case struct. Pass camal for CamalCase and snake for snake_case.
+- caseType - This determines whether you want to use the camelCase or snake_case struct. Pass camel for CamelCase and snake for snake_case.
 
 Returns:
-- []LocationCamal - Golang struct slice that contains the results of the query and will marshal as camalCase.
+- []LocationCamel - Golang struct slice that contains the results of the query and will marshal as camelCase.
 - []LocationSnake - Golang struct slice that contains the results of the query and will marshal as snake_case.
 - error - Any errors.
 
