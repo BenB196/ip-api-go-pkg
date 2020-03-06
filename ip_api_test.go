@@ -7,6 +7,12 @@ import (
 )
 
 func getSuccessfulSingleResponse() string {
+	var lat float32 = 40.7357
+	var lon float32 = -74.1724
+	var mobile = false
+	var proxy = false
+	var hosting = true
+
 	location := Location{
 		Status:        "success",
 		Message:       "",
@@ -14,22 +20,23 @@ func getSuccessfulSingleResponse() string {
 		ContinentCode: "NA",
 		Country:       "United States",
 		CountryCode:   "US",
-		Region:        "VA",
-		RegionName:    "Virginia",
-		City:          "Ashburn",
+		Region:        "NJ",
+		RegionName:    "New Jersey",
+		City:          "Newark",
 		District:      "",
-		ZIP:           "20149",
-		Lat:           39.0438,
-		Lon:           -77.4874,
+		ZIP:           "07175",
+		Lat:           &lat,
+		Lon:           &lon,
 		Timezone:      "America/New_York",
 		Currency:      "",
-		ISP:           "Level 3 Communications",
-		Org:           "Google Inc.",
+		ISP:           "Google LLC",
+		Org:           "Level 3",
 		AS:            "AS15169 Google LLC",
-		ASName:        "",
+		ASName:        "GOOGLE",
 		Reverse:       "dns.google",
-		Mobile:        false,
-		Proxy:         false,
+		Mobile:        &mobile,
+		Proxy:         &proxy,
+		Hosting:       &hosting,
 		Query:         "8.8.8.8",
 	}
 	
@@ -39,6 +46,12 @@ func getSuccessfulSingleResponse() string {
 }
 
 func getSuccessfulBatchResponse() string {
+	var lat1 float32 = 40.7357
+	var lon1 float32 = -74.1724
+	var mobile1 = false
+	var proxy1 = false
+	var hosting1 = true
+
 	location1 := Location{
 		Status:        "success",
 		Message:       "",
@@ -46,24 +59,31 @@ func getSuccessfulBatchResponse() string {
 		ContinentCode: "NA",
 		Country:       "United States",
 		CountryCode:   "US",
-		Region:        "VA",
-		RegionName:    "Virginia",
-		City:          "Ashburn",
+		Region:        "NJ",
+		RegionName:    "New Jersey",
+		City:          "Newark",
 		District:      "",
-		ZIP:           "20149",
-		Lat:           39.0438,
-		Lon:           -77.4874,
+		ZIP:           "07175",
+		Lat:           &lat1,
+		Lon:           &lon1,
 		Timezone:      "America/New_York",
 		Currency:      "",
-		ISP:           "Level 3 Communications",
-		Org:           "Google Inc.",
+		ISP:           "Google LLC",
+		Org:           "Level 3",
 		AS:            "AS15169 Google LLC",
-		ASName:        "",
+		ASName:        "GOOGLE",
 		Reverse:       "",
-		Mobile:        false,
-		Proxy:         false,
+		Mobile:        &mobile1,
+		Proxy:         &proxy1,
+		Hosting:       &hosting1,
 		Query:         "8.8.8.8",
 	}
+
+	var lat2 float32 = -33.8688
+	var lon2 float32 = 151.209
+	var mobile2 = false
+	var proxy2 = false
+	var hosting2 = true
 	
 	location2 := Location{
 		Status:        "success",
@@ -77,19 +97,22 @@ func getSuccessfulBatchResponse() string {
 		City:          "Sydney",
 		District:      "",
 		ZIP:           "1001",
-		Lat:           -33.8688,
-		Lon:           151.209,
+		Lat:           &lat2,
+		Lon:           &lon2,
 		Timezone:      "Australia/Sydney",
 		Currency:      "",
 		ISP:           "Cloudflare, Inc.",
 		Org:           "",
 		AS:            "AS13335 Cloudflare, Inc.",
-		ASName:        "",
+		ASName:        "CLOUDFLARENET",
 		Reverse:       "",
-		Mobile:        false,
-		Proxy:         false,
+		Mobile:        &mobile2,
+		Proxy:         &proxy2,
+		Hosting:       &hosting2,
 		Query:         "1.1.1.1",
 	}
+
+	var lat3 float32 = 39.0438
 	
 	location3 := Location{
 		Status:        "success",
@@ -103,8 +126,8 @@ func getSuccessfulBatchResponse() string {
 		City:          "Ашберн",
 		District:      "",
 		ZIP:           "20149",
-		Lat:           39.0438,
-		Lon:           0,
+		Lat:           &lat3,
+		Lon:           nil,
 		Timezone:      "",
 		Currency:      "",
 		ISP:           "",
@@ -112,8 +135,9 @@ func getSuccessfulBatchResponse() string {
 		AS:            "",
 		ASName:        "",
 		Reverse:       "",
-		Mobile:        false,
-		Proxy:         false,
+		Mobile:        nil,
+		Proxy:         nil,
+		Hosting:       nil,
 		Query:         "",
 	}
 
@@ -125,7 +149,7 @@ func getSuccessfulBatchResponse() string {
 }
 
 func getSuccessfulFieldListString() string {
-	return "fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query"
+	return "fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query,hosting"
 }
 
 func TestSingleQuery(t *testing.T) {
@@ -133,13 +157,13 @@ func TestSingleQuery(t *testing.T) {
 		Queries: []QueryIP{
 			{Query:"8.8.8.8"},
 		},
-		Fields:  "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query",
+		Fields:  "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query,hosting",
 		Lang:    "",
 	}
 
-	var location Location
+	var location *Location
 
-	location, err := SingleQuery(singleQuery,"","")
+	location, err := SingleQuery(singleQuery,"","",true)
 
 	if err != nil {
 		t.Error(err)
@@ -162,13 +186,13 @@ func TestBatchQuery(t *testing.T) {
 			{Query:"1.1.1.1"},
 			{Query:"8.8.4.4",Fields:"status,message,continent,country,region,city,zip,lat",Lang:"ru"},
 		},
-		Fields:  "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query",
+		Fields:  "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query,hosting",
 		Lang:    "",
 	}
 
 	var locations []Location
 
-	locations, err := BatchQuery(batchQuery,"","")
+	locations, err := BatchQuery(batchQuery,"","",true)
 
 	if err != nil {
 		t.Error(err)
@@ -184,7 +208,7 @@ func TestBatchQuery(t *testing.T) {
 }
 
 func TestBuildFieldList(t *testing.T) {
-	fieldsList := "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query"
+	fieldsList := "status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,asname,reverse,mobile,proxy,query,hosting"
 
 	fieldListString := buildFieldList(fieldsList)
 
