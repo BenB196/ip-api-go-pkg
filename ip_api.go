@@ -31,6 +31,7 @@ type Location struct {
 	Lat           *float32 `json:"lat,omitempty"`
 	Lon           *float32 `json:"lon,omitempty"`
 	Timezone      string   `json:"timezone,omitempty"`
+	Offset        *int     `json:"offset,omitempty"`
 	Currency      string   `json:"currency,omitempty"`
 	ISP           string   `json:"isp,omitempty"`
 	Org           string   `json:"org,omitempty"`
@@ -241,7 +242,7 @@ func buildLangString(lang string) string {
 	return "lang=" + lang
 }
 
-var AllowedAPIFields = []string{"status", "message", "continent", "continentCode", "country", "countryCode", "region", "regionName", "city", "district", "zip", "lat", "lon", "timezone", "isp", "org", "as", "asname", "reverse", "mobile", "proxy", "hosting", "query"}
+var AllowedAPIFields = []string{"status", "message", "continent", "continentCode", "country", "countryCode", "region", "regionName", "city", "district", "zip", "lat", "lon", "timezone", "offset", "isp", "org", "as", "asname", "reverse", "mobile", "proxy", "hosting", "query"}
 
 var AllowedLanguages = []string{"en", "de", "es", "pt-BR", "fr", "ja", "zh-CN", "ru"}
 
