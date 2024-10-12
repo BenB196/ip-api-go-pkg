@@ -232,19 +232,25 @@ func buildURI(query Query, queryType string, apiKey string, baseURL string) stri
 	return baseURI
 }
 
-// Build fields string from slice
+// buildFieldList Build fields string from slice
 func buildFieldList(fields string) string {
 	return "fields=" + fields
 }
 
-// Build lang string from lang value
+// buildLangString Build lang string from lang value
 func buildLangString(lang string) string {
 	return "lang=" + lang
 }
 
-var AllowedAPIFields = []string{"status", "message", "continent", "continentCode", "country", "countryCode", "region", "regionName", "city", "district", "zip", "lat", "lon", "timezone", "offset", "isp", "org", "as", "asname", "reverse", "mobile", "proxy", "hosting", "query"}
+// getAllowedApiFields return static list of allowed API fields
+func getAllowedApiFields() []string {
+	return []string{"status", "message", "continent", "continentCode", "country", "countryCode", "region", "regionName", "city", "district", "zip", "lat", "lon", "timezone", "offset", "isp", "org", "as", "asname", "reverse", "mobile", "proxy", "hosting", "query"}
+}
 
-var AllowedLanguages = []string{"en", "de", "es", "pt-BR", "fr", "ja", "zh-CN", "ru"}
+// getAllowedLanguages return static list of allowed API languages
+func getAllowedLanguages() []string {
+	return []string{"en", "de", "es", "pt-BR", "fr", "ja", "zh-CN", "ru"}
+}
 
 /*
 ValidateFields - validates the fields string to make sure it only has valid parameters
@@ -254,7 +260,7 @@ func ValidateFields(fields string) (string, error) {
 	fieldsSlice := strings.Split(fields, ",")
 
 	for _, field := range fieldsSlice {
-		if !contains(AllowedAPIFields, field) {
+		if !contains(getAllowedApiFields(), field) {
 			return "", errors.New("error: illegal field provided: " + field)
 		}
 	}
@@ -267,7 +273,7 @@ ValidateLang - validates the lang string to make sure it is a valid lang option
 lang - string with lang value
 */
 func ValidateLang(lang string) (string, error) {
-	if !contains(AllowedLanguages, lang) {
+	if !contains(getAllowedLanguages(), lang) {
 		return "", errors.New("error: illegal lang value provided: " + lang)
 	}
 
